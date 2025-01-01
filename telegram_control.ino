@@ -5,9 +5,12 @@ const String COMMANDS = F("["
                           "{\"command\":\"med\", \"description\":\"Fan speed: medium\"},"
                           "{\"command\":\"high\", \"description\":\"Fan speed: high\"},"
                           "{\"command\":\"light\", \"description\":\"Toggles light\"},"
+                          "{\"command\":\"brillo_menos\", \"description\":\"Brightness -\"},"
+                          "{\"command\":\"brillo_mas\", \"description\":\"Brightness +\"},"
                           "{\"command\":\"2h\", \"description\":\"Fan will turn off after 2h\"},"
                           "{\"command\":\"4h\", \"description\":\"Fan will turn off after 4h\"},"
                           "{\"command\":\"8h\", \"description\":\"Fan will turn off after 8h\"},"
+                          "{\"command\":\"source\", \"description\":\"Changes TV source\"},"
                           "{\"command\":\"restart\", \"description\":\"Restart the device\"},"
                           "{\"command\":\"offall\", \"description\":\"Turn off everything\"},"
                           "{\"command\":\"help\",  \"description\":\"Get bot usage help\"},"
@@ -141,13 +144,39 @@ int telegram_control(String text, String msg_chat_id, int numNewMessages){
       time_8h(); // TODO: cambiarlo a una operacion (operation = OP_FAN_8H)
       bot.sendMessage(msg_chat_id, "Enviado 8H fan ");
     }
-    else if (text.equalsIgnoreCase("brillo-") or text == "/brillo-"){
+    else if (text.equalsIgnoreCase("brillo-") or text == "/brillo_menos"){
       turn_down_bright();
       bot.sendMessage(msg_chat_id, "Brillo bajado");
     }
-    else if (text.equalsIgnoreCase("brillo+") or text == "/brillo+"){
+    else if (text.equalsIgnoreCase("brillo+") or text == "/brillo_mas"){
       turn_up_bright();
       bot.sendMessage(msg_chat_id, "Brillo subido");
+    }
+    else if (text.equalsIgnoreCase("Source") or text == "/source"){
+      tv_source();
+      bot.sendMessage(msg_chat_id, "TV Source pulsado");
+    }
+    else if (text.equalsIgnoreCase("teleoff") or text == "/teleoff"){
+      shutdown_tv();
+      bot.sendMessage(msg_chat_id, "Apagando/encendiendo tele");
+    }
+    else if (text.equalsIgnoreCase("led") or text == "/leds"){
+      led_shut_down();
+      bot.sendMessage(msg_chat_id, "Apagando/encendiendo LED");
+    }
+    else if (text.startsWith("/nec ")){
+      // /nec 0x0a;0x0b
+      String hexes = text.substring(5,15);
+      String addr = hexes.substring(0, 4);
+      String cmd = hexes.substring(5, 9);
+      Serial.println("HEXES: ");
+      Serial.println(addr);
+      Serial.println(cmd);
+      String encoded_hex; 
+      encoded_hex=String(encode_NEC(strtol(addr.c_str(), NULL, 0), strtol(cmd.c_str(), NULL, 0)));
+      bot.sendMessage(msg_chat_id, encoded_hex);  // TODO mejorar el texto, se debería devolver un string en formato hex 0x50AFD02F
+      //bot.sendMessage(msg_chat_id, "NEX: "+ String(encode_NEC(strtol(addr.c_str(), NULL, 0), strtol(cmd.c_str(), NULL, 0))));
+      //bot.sendMessage(msg_chat_id, "NEX: "+ encode_NEC(addr.toInt(), cmd.toInt()));
     }
     else if (text.equalsIgnoreCase("test") or text == "/test"){
       send_message_TV("0x04000300");

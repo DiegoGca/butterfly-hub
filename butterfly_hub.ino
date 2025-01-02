@@ -64,7 +64,7 @@ WiFiClientSecure secure_client;
 UniversalTelegramBot bot(BOT_TOKEN, secure_client);
 
 
-#define BOT_MTBS 850 // time between scan messages
+#define BOT_MTBS 870 // time between scan messages
 unsigned long bot_lasttime; // last time messages' scan has been done
 
 
@@ -102,7 +102,7 @@ void wifiSetup() {
   // Connect to Wi-Fi using wifiMulti (connects to the SSID with strongest connection)
   Serial.println("Connecting Wifi...");
   esp_wifi_set_mac(WIFI_IF_STA, newMACAddress);
-  if(wifiMulti.run() == WL_CONNECTED) {
+  if(wifiMulti.run(10000) == WL_CONNECTED) {
     Serial.println("");
     Serial.println("WiFi connected");
     Serial.print(WiFi.SSID());
@@ -360,7 +360,7 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 
-  if (millis() - bot_lasttime > BOT_MTBS) {
+  if (millis() - bot_lasttime >= BOT_MTBS) {
 
     if (WiFi.status() == WL_CONNECTED) {
       int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
@@ -389,6 +389,9 @@ void loop() {
       }
 
       bot_lasttime = millis();
-    } // if wifi connected
+    } else {
+      // Wifi not connected:
+      wifiSetup();
+    }
   }
 }

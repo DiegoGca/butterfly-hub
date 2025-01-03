@@ -36,7 +36,7 @@ The ESP32 acts as virtual devices to the alexa network, and sends commands using
    - `/status` - Get current status of all devices
    - `/restart` - Restart the ESP32-HUB
 
-## Setup Instructions
+## Setup Instructions 🛠
 
 1. **Hardware Setup:**
    - Connect your ESP32 to your home network
@@ -68,16 +68,17 @@ The ESP32 acts as virtual devices to the alexa network, and sends commands using
    - Go to "Add Device" and select "Other"
    - Follow the prompts to discover your ESP32-controlled devices
 
-## To-Do List 
+## To-Do List 📝
 
 - [x] Save multiple Wifi networks and connect to the strongest
 - [x] Add Telegram control with commands
 - [x] Restrict bot to admin user(s)
+- [ ] Add wire diagram and stl file
 - [ ] clean code: unused imports/macros, translate comments
 - [ ] Store TV IR commands in macros
 - [ ] Revert Multi-Wifi to single network for simplicity
 - [ ] Use F() to store string in program memory (flash storage) instead of dynamic work memory so there is more free memory left.
-- [ ] Replace fauxmo with Espalexa in order to add more devices?
+- [ ] Replace fauxmo with [Espalexa] (https://nocheprogramacion.com/series/arduino_esp/020_alexa.html#17:28) in order to add more devices? 
 - [ ] Unify "fan" and "light" in the same device to overcome alexa's devices limitation (up to 3 devices sharing IP)
 - [ ] Add TV brightness and LEDs as a single device?
 - [ ] Implement OTA (Over-The-Air) updates
@@ -90,7 +91,7 @@ The ESP32 acts as virtual devices to the alexa network, and sends commands using
 - [ ] Use bluetooth to turn on ceiling LEDs. Reverse engineering needed
 - [ ] Add scheduling functionality for automated control
 
-## Troubleshooting 
+## Troubleshooting 🆘
 
 If you encounter any issues, please check the following:
 

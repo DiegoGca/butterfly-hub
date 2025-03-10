@@ -7,7 +7,7 @@
 #define SENDING_REPEATS 0
 
 
-#define TV_POWER 0x50AFD02F
+#define TV_POWER 0x20DF10EF
 #define TV_ENERGY 0x20DFA956
 #define TV_BACK 0x20DF14EB
 #define TV_DOWN 0x20DF827D
@@ -79,9 +79,18 @@ uint32_t encode_NEC(int addr, int cmd){
   return irsend.encodeNEC(addr, cmd);
 }
 
+/*
+char * encode_NEC(int addr, int cmd){
+  char buffer[75];
+  Serial.println("ADDR COMM \t- ENCODED RAW");
+  sprintf(buffer, "%02X %02X \t- %08ul o 0x%08X", addr, cmd, irsend.encodeNEC(addr, cmd), irsend.encodeNEC(addr, cmd)); Serial.println(buffer);
+  return buffer;
+}*/
+
 
 // apaga TV)
 void shutdown_tv(){
+  delay(10);
   irsend.sendNEC(TV_POWER);    
 }
 

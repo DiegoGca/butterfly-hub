@@ -135,7 +135,7 @@ void handle_operation() {
     case OP_FAN_LOW:
       // 
       speed_low();
-      bot.sendMessage(CHAT_ID, "Se ha encendido el ventilador en modo LOW ", "");
+      bot.sendMessage(CHAT_ID, "Se ha encendido el ventilador en modo LOW", "");
       break;
     case OP_FAN_MDM:
       // 
@@ -149,7 +149,7 @@ void handle_operation() {
       break;
     case OP_TECHO_ON:
       // 
-      bot.sendMessage(CHAT_ID, "Se ha encendido el techo", "");
+      bot.sendMessage(CHAT_ID, "Se ha encendido el techo 💡", "");
       toggle_light();
       break;
     case OP_TECHO_OFF:
@@ -165,12 +165,12 @@ void handle_operation() {
       break;
     case OP_TELE_UP:
       // 
-      bot.sendMessage(CHAT_ID, "Se ha bajado el brillo de la tele", "");
+      bot.sendMessage(CHAT_ID, "Se ha subido el brillo de la tele 📺 💡+", "");
       turn_up_bright();
       break;
     case OP_TELE_DOWN:
       // 
-      bot.sendMessage(CHAT_ID, "Se ha bajado el brillo de la tele", "");
+      bot.sendMessage(CHAT_ID, "Se ha bajado el brillo de la tele 📺 ⤵💡-", "");
       turn_down_bright();
       break;
 
@@ -263,7 +263,6 @@ void setup() {
           case 254:
           case 255:
             operation = OP_FAN_LOW;
-            // you can instruct the library to report the new state to Alexa on next request:
             fauxmo.setState(DEVICE_VENTILADOR, true, 254);
             Serial.println("switch fan 254/255 ");
             break;
@@ -280,8 +279,33 @@ void setup() {
     }
     else if (strcmp(device_name, DEVICE_TECHO) == 0) {
       if (state == true) {
-        fauxmo.setState(DEVICE_TECHO, true, 254);
-        operation = OP_TECHO_ON;     // encender luz techo
+        switch(value) {
+          case 0:
+            operation = OP_TECHO_OFF;    // apagar techo
+            Serial.println("switch techo 0, apagar");
+            break;
+          case 4:
+            operation = OP_TELE_DOWN;    // tv bright down
+            Serial.println("switch techo/tv 4 BRIGHT-: ");
+            fauxmo.setState(DEVICE_TECHO, true, 5); // workaround to be able to enter on default case after this option was executed and without Alexa saying device unresponsive
+            break;
+          case 6:
+            operation = OP_TELE_UP;    // tv bright up 
+            Serial.println("switch techo/tv 6 BRIGHT+: ");
+            fauxmo.setState(DEVICE_TECHO, true, 7); // workaround to be able to enter on default case after this option was executed and without Alexa saying device unresponsive
+            break;
+          case 254:
+          case 255:
+            operation = OP_TECHO_ON;
+            fauxmo.setState(DEVICE_TECHO, true, 254);
+            Serial.println("switch techo ON 254/255 ");
+            break;
+          default:
+            fauxmo.setState(DEVICE_TECHO, true, 254);
+            operation = OP_TECHO_ON;     // encender luz techo
+            break;
+        } 
+        
       } else {
         fauxmo.setState(DEVICE_TECHO, false, 0);
         operation = OP_TECHO_OFF;    // apagar luz techo
@@ -289,6 +313,7 @@ void setup() {
     }
     
     else if (strcmp(device_name, DEVICE_TELE) == 0) {
+      // TODO: delete this since only 2 deveices are allowed
       if (state == true) {
         Serial.print("valor brillo: ");
         Serial.println(value);

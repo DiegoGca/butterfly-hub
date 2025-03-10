@@ -173,13 +173,17 @@ int telegram_control(String text, String msg_chat_id, int numNewMessages){
       Serial.println(addr);
       Serial.println(cmd);
       String encoded_hex; 
+      //encoded_hex=String(encode_NEC(strtol(addr.c_str(), NULL, 0), strtol(cmd.c_str(), NULL, 0)));
+      char buffer[75];
+      sprintf(buffer, "%08ul o 0x%08X",  encode_NEC(strtol(addr.c_str(), NULL, 0), strtol(cmd.c_str(), NULL, 0)), encode_NEC(strtol(addr.c_str(), NULL, 0), strtol(cmd.c_str(), NULL, 0)));
       encoded_hex=String(encode_NEC(strtol(addr.c_str(), NULL, 0), strtol(cmd.c_str(), NULL, 0)));
-      bot.sendMessage(msg_chat_id, encoded_hex);  // TODO mejorar el texto, se debería devolver un string en formato hex 0x50AFD02F
+      bot.sendMessage(msg_chat_id, buffer);  // TODO mejorar el texto, se debería devolver un string en formato hex 0x50AFD02F
       //bot.sendMessage(msg_chat_id, "NEX: "+ String(encode_NEC(strtol(addr.c_str(), NULL, 0), strtol(cmd.c_str(), NULL, 0))));
       //bot.sendMessage(msg_chat_id, "NEX: "+ encode_NEC(addr.toInt(), cmd.toInt()));
     }
     else if (text.equalsIgnoreCase("test") or text == "/test"){
-      send_message_TV("0x04000300");
+      // send_message_TV("0x04000300");
+      test_light();
       bot.sendMessage(msg_chat_id, "comando test");
     }
 

@@ -49,6 +49,7 @@
 #define OP_TELE_OFF 3000 // tele off/on
 #define OP_TELE_UP 3001 // subir brillo
 #define OP_TELE_DOWN 3002 // bajar brillo
+#define OP_TELE_VOL_DOWN 3003 // bajar volumen
 
 #define OP_LEDS_OFF 4000 // LEDS off/on
 #define OP_LEDS_UP 4001 // subir brillo LEDS
@@ -109,8 +110,6 @@ void wifiSetup() {
     Serial.print(" ("+WiFi.BSSIDstr()+")");
     Serial.println();
     Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-    Serial.print("Local IP: ");
     Serial.println(WiFi.localIP());
     Serial.print("Subnet Mask: " );
     Serial.println(WiFi.subnetMask());
@@ -173,6 +172,11 @@ void handle_operation() {
       bot.sendMessage(CHAT_ID, "Se ha bajado el brillo de la tele 📺 ⤵💡-", "");
       turn_down_bright();
       break;
+    case OP_TELE_VOL_DOWN:
+      // 
+      bot.sendMessage(CHAT_ID, "Se ha bajado el volumen de la tele 📺 ⤵🔉-", "");
+      tv_volume(4);
+      break;
 
     case OP_LEDS_DIY:
     case OP_LEDS_DIY+1:
@@ -225,9 +229,9 @@ void setup() {
 
 
   // Add virtual devices
-  fauxmo.addDevice(DEVICE_VENTILADOR); // quizás unir el venitlador y el techo?
+  fauxmo.addDevice(DEVICE_VENTILADOR);
   fauxmo.addDevice(DEVICE_TECHO);
-  fauxmo.addDevice(DEVICE_TELE);
+  //fauxmo.addDevice(DEVICE_TELE);
   // alexa allows up to 3 devices sharing the same IP address.
   //fauxmo.addDevice(DEVICE_LEDS);
  
@@ -294,6 +298,11 @@ void setup() {
             Serial.println("switch techo/tv 6 BRIGHT+: ");
             fauxmo.setState(DEVICE_TECHO, true, 7); // workaround to be able to enter on default case after this option was executed and without Alexa saying device unresponsive
             break;
+          case 9:
+            operation = OP_TELE_VOL_DOWN;    // tv bright up 
+            Serial.println("switch techo/tv 9 VOL+: ");
+            fauxmo.setState(DEVICE_TECHO, true, 10); // workaround to be able to enter on default case after this option was executed and without Alexa saying device unresponsive
+            break;
           case 254:
           case 255:
             operation = OP_TECHO_ON;
@@ -313,7 +322,7 @@ void setup() {
     }
     
     else if (strcmp(device_name, DEVICE_TELE) == 0) {
-      // TODO: delete this since only 2 deveices are allowed
+      // TODO: delete this since only 2 deveices are allowed per IP
       if (state == true) {
         Serial.print("valor brillo: ");
         Serial.println(value);
@@ -333,6 +342,7 @@ void setup() {
     }
     
     else if (strcmp(device_name, DEVICE_LEDS) == 0) {
+      // TODO: delete this since only 2 deveices are allowed per IP
       if (state == true) {
         Serial.print("valor LEDS: ");
         Serial.println(value);

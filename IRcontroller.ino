@@ -13,8 +13,8 @@
 #define TV_DOWN 0x20DF827D
 #define TV_UP 0x20DF02FD
 #define TV_OK 0x20DF22DD
-#define TV_VOL_UP 0x50AF40BF
-#define TV_VOL_DOWN 0x50AFC03F
+#define TV_VOL_UP 0x20DF40BF
+#define TV_VOL_DOWN 0x20DFC03F
 #define TV_INPUT_SOURCE 0x20DFD02F
 
 #define LED_POWER 0x00FF02FD
@@ -150,6 +150,32 @@ void tv_source() {
   delay(30);
   irsend.sendNEC(LED_DIY_1);// peachy TODO ponerlo fuera    irsend.encodeNEC(0x00, 0x0C) // peachy TODO ponerlo fuera  
 }
+
+void tv_volume(int volume) {
+  // bajar volumen 25 veces
+  /*for (int i=0; i<5; i++) {
+    irsend.sendNEC(TV_VOL_DOWN, 32, 5);
+    delay(125);
+  }*/
+  irsend.sendNEC(TV_VOL_DOWN, 32, 10);
+  delay(125);
+  irsend.sendNEC(TV_VOL_DOWN);
+  delay(125);
+  irsend.sendNEC(TV_VOL_DOWN, 32, 10);
+  delay(125);
+  irsend.sendNEC(TV_VOL_DOWN);
+  delay(125);
+  irsend.sendNEC(TV_VOL_DOWN, 32, 3);
+  delay(125);
+  irsend.sendNEC(TV_VOL_DOWN);
+  delay(170);
+  // subirlo al 4
+  for (int i=0; i< volume; i++) {
+    irsend.sendNEC(TV_VOL_UP);
+    delay(60);
+  }
+}
+
 
 
 void led_shut_down(){

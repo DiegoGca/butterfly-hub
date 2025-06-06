@@ -25,7 +25,7 @@ void setup_telegram_controller(){
 
   getFirstID(ADMINS_CHAT_IDS, admin1_chat_id);
 
-  bot.sendMessage(admin1_chat_id, "Alexa 🦋 Bot started up ⤴", "");
+  bot.sendMessage(admin1_chat_id, "Alexa 🦋 Bot started up ⤴ with IP: "+WiFi.localIP().toString(), "");
 }
 
 
